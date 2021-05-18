@@ -141,3 +141,21 @@ SELECT * FROM organization.assets WHERE asset_amt > 1000;
 UPDATE organization.brokers SET broker_nm = 'Big Sam' WHERE broker_id = 2;
 DELETE FROM organization.bank_accounts WHERE bank_id = 4;
 
+/*7*/
+create view staff as select * from organization.staff;
+select staff_id, overlay(char(bank_account_no) placing '******' from 3 for 8) from staff;
+
+/*8*/
+ CREATE VIEW assets_view AS
+  SELECT asset_id, asset_type_dk, held_organization_id
+  FROM organization.assets
+  INNER JOIN organization.bank_accounts
+  ON bank_id = held_organization_id
+  WHERE bank_assets_value_amt  > 0;
+
+CREATE Brokers_view AS
+  SELECT broker_id, broker_nm
+  FROM organization.brokers
+  INNER JOIN organization.assets
+  ON broker_nm = held_organization_nm;
+
