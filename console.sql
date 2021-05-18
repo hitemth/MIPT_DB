@@ -153,7 +153,7 @@ select staff_id, overlay(char(bank_account_no) placing '******' from 3 for 8) fr
   ON bank_id = held_organization_id
   WHERE bank_assets_value_amt  > 0;
 
-CREATE Brokers_view AS
+CREATE VIEW Brokers_view AS
   SELECT broker_id, broker_nm
   FROM organization.brokers
   INNER JOIN organization.assets
