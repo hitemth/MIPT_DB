@@ -1,130 +1,143 @@
-DROP SCHEMA IF EXISTS project CASCADE;
-CREATE SCHEMA project;
-DROP TABLE IF EXISTS project.match;
-CREATE TABLE project.match (
-    MatchID INT PRIMARY KEY UNIQUE,
-    TeamHomeName VARCHAR(100),
-    TeamAwayName VARCHAR(100),
-    KitHomeID INT,
-    KitAwayID INT,
-    StadiumID INT,
-    RefereeName VARCHAR(100),
-    Date DATE,
-    HomeScore INT,
-    AwayScore INT
+drop schema if exists organization CASCADE;
+create schema organization;
+drop table if exists organization.staff;
+
+create table organization.staff (
+    staff_id              integer    primary key,
+    staff_position_nm     varchar    not null,
+    staff_firs_nm         varchar    not null,
+    staff_last_nm         varchar    not null,
+    age_amt               integer    not null,
+    bank_account_no       bigserial  unique,
+    insurance_no          bigserial  unique
+);
+create table organization.investors(
+    investor_id         integer     primary key,
+    investor_nm         varchar     not null,
+    bank_account_no     integer     unique,
+    contract_no         integer     unique,
+    investments_amt     real
 );
 
-DROP TABLE IF EXISTS project.stadium;
-CREATE TABLE project.stadium (
-    StadiumID INT PRIMARY KEY UNIQUE,
-    Capacity INT check(capacity>18000),
-    Category CHAR check(category<'E')
+create table organization.transactions(
+    transaction_id   integer    primary key,
+    operation_nm     varchar    not null,
+    transaction_dttm timestamp  not null,
+    deduction_acc_no integer    not null,
+    crediting_acc_no integer    not null,
+    proceeding_amt   real
 );
 
-DROP TABLE IF EXISTS project.stadiumName;
-CREATE TABLE project.stadiumName (
-    StadiumID INT,
-    StadiumName VARCHAR(100) PRIMARY KEY,
-    TeamID INT
+create table organization.assets(
+    asset_id                integer     primary key,
+    asset_type_dk           integer     not null,
+    held_organization_id    integer     not null,
+    held_organization_nm    varchar     not null,
+    asset_amt               real        not null,
+    current_worth_amt       real
 );
 
-DROP TABLE IF EXISTS project.team;
-CREATE TABLE project.team (
-    TeamName VARCHAR(100) PRIMARY KEY,
-    KitHomeID INT UNIQUE,
-    KitAwayID INT UNIQUE,
-    StadiumID INT,
-    League INT check (league<5)
+create table organization.bank_accounts(
+    bank_id                    integer     primary key,
+    bank_nm                    varchar     not null,
+    bank_account_no            integer     not null,
+    bank_assets_value_amt      real        not null
 );
 
-DROP TABLE IF EXISTS project.kits;
-CREATE TABLE project.kits (
-    KitID INT PRIMARY KEY UNIQUE,
-    ShirtColor VARCHAR(100),
-    ShortsColor VARCHAR(100),
-    Brand VARCHAR(100)
+create table organization.brokers(
+    broker_id       integer     primary key,
+    broker_nm       varchar     not null,
+    contract_no     integer     not null
 );
 
-DROP TABLE IF EXISTS project.kitPrices;
-CREATE TABLE project.kitPrices (
-    Brand VARCHAR(100) PRIMARY KEY,
-    Price REAL CHECK (price>0)
+create table organization.partners(
+    partner_id      integer     primary key,
+    partner_nm      varchar     not null,
+    assets_prt      real        not null,
+    profit_pct      real         not null
 );
+/* 4 */
+INSERT INTO organization.staff  VALUES (1,'Trader','Mark','Renton',27, 1567789800555, 45384920373);
+INSERT INTO organization.staff  VALUES (2,'Trader','Sick','Boy',28, 3456789876543, 987654568766);
+INSERT INTO organization.staff  VALUES (3,'Manager','Begbie','Beg',35, 56545675675633, 57567765676567);
+INSERT INTO organization.staff  VALUES (4,'Financial Engineer','George','Floyd',45, 873896-05648376, 479843893473467);
+INSERT INTO organization.staff  VALUES (5,'CEO','Ekaterina','Ivashkina',21, 567893876789, 45678765434567);
+INSERT INTO organization.staff VALUES (6, 'Guard', 'John', 'Wick', 35, 149468, 652158);
+INSERT INTO organization.staff VALUES (7, 'cook', 'Arab', 'Kebab', 32, 86680759, 32551122);
+INSERT INTO organization.staff VALUES (8, 'Receptionist', 'James', 'Cook', 40, 58201070, 49032144);
+INSERT INTO organization.staff VALUES (9, 'Designer', 'Alen', 'De lon', 30, 25275737, 52405232);
+INSERT INTO organization.staff VALUES (10, 'Executive Director', 'Pyotr', 'Makhnov', 23, 9453760, 45278078);
 
-DROP TABLE IF EXISTS project.referee;
-CREATE TABLE project.referee (
-    RefereeName VARCHAR(100) PRIMARY KEY,
-    RefereeCategory CHAR CHECK (RefereeCategory < 'E')
-);
 
-DROP TABLE IF EXISTS project.categories;
-CREATE TABLE project.categories (
-    RefereeCategory CHAR PRIMARY KEY,
-    IsMain BOOLEAN NOT NULL
-);
+INSERT INTO organization.transactions VALUES (2, 'withdraw', '2017-03-31 09:30:20-07', 40028879, 74566223, 840939);
+INSERT INTO organization.transactions VALUES (3, 'deposit', '2017-03-31 09:30:20-07', 10496552, 25690908, 768395);
+INSERT INTO organization.transactions VALUES (4, 'deposit', '2017-03-31 09:30:20-07', 39020525, 70609288, 133577);
+INSERT INTO organization.transactions VALUES (5, 'deposit', '2017-03-31 09:30:20-07', 27800679, 66815637, 99074);
+INSERT INTO organization.transactions VALUES (6, 'withdraw', '2017-03-31 09:30:20-07', 9187756, 87367938, 220997);
+INSERT INTO organization.transactions VALUES (7, 'withdraw', '2017-03-31 09:30:20-07', 82752720, 99387226, 332733);
+INSERT INTO organization.transactions VALUES (8, 'deposit', '2017-03-31 09:30:20-07', 92065009, 12465329, 621027);
+INSERT INTO organization.transactions VALUES (9, 'deposit', '2017-03-31 09:30:20-07', 89880338, 78406305, 867142);
 
-INSERT INTO project.match (MatchID,TeamHomeName,TeamAwayName,KitHomeID,KitAwayID,StadiumID,RefereeName,Date,HomeScore,AwayScore) VALUES (1,'Brighton','West Ham',1,4,1,'Martin Atkinsson','2020-12-30', 3,1);
-INSERT INTO project.match (MatchID,TeamHomeName,TeamAwayName,KitHomeID,KitAwayID,StadiumID,RefereeName,Date,HomeScore,AwayScore) VALUES (2,'Tottenham','Man United',6,7,2,'Mike Dean','2020-12-30', 1,1);
-INSERT INTO project.match (MatchID,TeamHomeName,TeamAwayName,KitHomeID,KitAwayID,StadiumID,RefereeName,Date,HomeScore,AwayScore) VALUES (3,'Brighton','Tottenham',1,6,1,'Mike Dean','2020-12-20', 0,3);
-INSERT INTO project.match (MatchID,TeamHomeName,TeamAwayName,KitHomeID,KitAwayID,StadiumID,RefereeName,Date,HomeScore,AwayScore) VALUES (4,'West Ham','Man United',3,8,2,'Michael Oliver','2020-12-20', 0,0);
-INSERT INTO project.match (MatchID,TeamHomeName,TeamAwayName,KitHomeID,KitAwayID,StadiumID,RefereeName,Date,HomeScore,AwayScore) VALUES (5,'Man United','Tottenham',7,6,3,'Paul Tierney','2020-12-10', 6,2);
+INSERT INTO organization.assets VALUES (1, 2, 882365, 'Oleg`s fund', 4349555, 11239780.492914064);
+INSERT INTO organization.assets VALUES (2, 14, 2867993, 'Loh invesments', 2435513, 11247098.200779192);
+INSERT INTO organization.assets VALUES (3, 12, 252616, 'Big money company', 51552, 11253923.356957376);
+INSERT INTO organization.assets VALUES (4, 11, 7528136, 'Jews assosiation', 8022139, 11259265.692179298);
+INSERT INTO organization.assets VALUES (5, 9, 4918345, 'Big floppas Big fund', 3627708, 11269164.64940158);
+INSERT INTO organization.assets VALUES (6, 1, 1513780, 'Phystech-soyz', 886508, 11275824.242516516);
+INSERT INTO organization.assets VALUES (7, 4, 1967083, 'Phystech-boyz', 3418835, 11284211.787130533);
+INSERT INTO organization.assets VALUES (8, 12, 4116661, 'Nothing but money', 7558498, 11292467.520848341);
 
-INSERT INTO project.stadium (StadiumID,Capacity,Category) VALUES (1, 20000, 'D');
-INSERT INTO project.stadium (StadiumID,Capacity,Category) VALUES (2, 50000, 'B');
-INSERT INTO project.stadium (StadiumID,Capacity,Category) VALUES (3, 70000, 'A');
-INSERT INTO project.stadium (StadiumID,Capacity,Category) VALUES (4, 25000, 'D');
-INSERT INTO project.stadium (StadiumID,Capacity,Category) VALUES (5, 35000, 'C');
+INSERT INTO organization.bank_accounts VALUES (1, 'We steal your money bank', 529922, 19656662.588075574);
+INSERT INTO organization.bank_accounts VALUES (2, 'TinkON bank', 628007, 25016332.02719511);
+INSERT INTO organization.bank_accounts VALUES (3, 'WasteBank', 447119, 52597290.27984108);
+INSERT INTO organization.bank_accounts VALUES (4, 'BetaBank', 628229, 40137549.6432789);
+INSERT INTO organization.bank_accounts VALUES (5, 'SilverSuchs Bank', 514978, 52866845.21880906);
+INSERT INTO organization.bank_accounts VALUES (6, 'Uganga Bank', 59306, 68418707.77312997);
+INSERT INTO organization.bank_accounts VALUES (7, 'Bank of China', 462110, 74751792.6649764);
+INSERT INTO organization.bank_accounts VALUES (8, 'Socks bank', 419634, 24910429.94337427);
 
-INSERT INTO project.stadiumName(StadiumID, StadiumName,TeamID) VALUES (1, 'Amex', 1);
-INSERT INTO project.stadiumName(StadiumID, StadiumName,TeamID) VALUES (2, 'London', 2);
-INSERT INTO project.stadiumName(StadiumID, StadiumName,TeamID) VALUES (2, 'Olympic stadium', 3);
-INSERT INTO project.stadiumName(StadiumID, StadiumName,TeamID) VALUES (3, 'Old Trafford', 4);
-INSERT INTO project.stadiumName(StadiumID, StadiumName,TeamID) VALUES (4, 'Villa park', 5);
+INSERT INTO organization.brokers VALUES (1, 'DPS broker', 14097);
+INSERT INTO organization.brokers VALUES (2, 'MTS broker', 91967);
+INSERT INTO organization.brokers VALUES (3, 'PPS broker', 70047);
+INSERT INTO organization.brokers VALUES (4, 'TinkON broker', 86647);
+INSERT INTO organization.brokers VALUES (5, 'Broken broker', 23245);
+INSERT INTO organization.brokers VALUES (6, 'Loh broker', 31660);
+INSERT INTO organization.brokers VALUES (7, 'GGWP broker', 45087);
+INSERT INTO organization.brokers VALUES (8, 'Chims broker', 83819);
 
-INSERT INTO project.kitPrices (Brand, Price) VALUES ('Adidas', 7000);
-INSERT INTO project.kitPrices (Brand, Price) VALUES ('Nike', 8000);
-INSERT INTO project.kitPrices (Brand, Price) VALUES ('Kappa', 6000);
-INSERT INTO project.kitPrices (Brand, Price) VALUES ('Umbro', 5000);
-INSERT INTO project.kitPrices (Brand, Price) VALUES ('New Balance', 7000);
+INSERT INTO organization.partners VALUES (1, 'LOH company', 0.03414431924389414, 1);
+INSERT INTO organization.partners VALUES (2, 'Jack Dods', 0.01389998124499301, 6);
+INSERT INTO organization.partners VALUES (3, 'El Gringo', 0.05084806731784365, 6);
+INSERT INTO organization.partners VALUES (4, 'Doshirak inc', 0.0719153216699475, 7);
+INSERT INTO organization.partners VALUES (5, 'Bla Bla Bicycle', 0.03649982544691276, 5);
+INSERT INTO organization.partners VALUES (6, 'Kim Chin Chim', 0.02012721190214005, 1);
+INSERT INTO organization.partners VALUES (7, 'Fresh and chips', 0.020156078576712164, 3);
 
-INSERT INTO project.referee(RefereeName, RefereeCategory) VALUES ('Martin Atkinsson', 'A');
-INSERT INTO project.referee(RefereeName, RefereeCategory) VALUES ('Michael Oliver', 'C');
-INSERT INTO project.referee(RefereeName, RefereeCategory) VALUES ('Mike Dean', 'A');
-INSERT INTO project.referee(RefereeName, RefereeCategory) VALUES ('Paul Tierney', 'B');
-INSERT INTO project.referee(RefereeName, RefereeCategory) VALUES ('Lee Mason', 'D');
+INSERT INTO organization.investors VALUES (1, 'Oleg', 64103613, 57267900, 78144);
+INSERT INTO organization.investors VALUES (2, 'Joe', 97529543, 78192064, 31720);
+INSERT INTO organization.investors VALUES (3, 'Lumumba', 30991739, 79726368, 87194);
+INSERT INTO organization.investors VALUES (4, 'Bingo', 54865092, 28198904, 863972);
+INSERT INTO organization.investors VALUES (5, 'Samuel', 73486052, 42996200, 186312);
+INSERT INTO organization.investors VALUES (6, 'Lizzie', 38869597, 48124559, 884893);
+INSERT INTO organization.investors VALUES (7, 'Naomi', 3999936, 13701065, 567099);
+INSERT INTO organization.investors VALUES (8, 'Poko', 72813318, 42700395, 138601);
+INSERT INTO organization.investors VALUES (9, 'Chungus', 55949259, 17050329, 679570);
 
-INSERT INTO project.categories(RefereeCategory, IsMain) VALUES ('A', true);
-INSERT INTO project.categories(RefereeCategory, IsMain) VALUES ('B', true);
-INSERT INTO project.categories(RefereeCategory, IsMain) VALUES ('C', false);
-INSERT INTO project.categories(RefereeCategory, IsMain) VALUES ('D', false);
-INSERT INTO project.categories(RefereeCategory, IsMain) VALUES ('E', false);
+/* 5 */
+/*ожидаем увидеть список названий организаций с суммарными текущими активами более 1488*/
+SELECT held_organization_nm,sum(current_worth_amt) FROM organization.assets GROUP BY held_organization_nm HAVING sum(current_worth_amt)>1488;
+/*ожидаем увидеть список банков в порядке возрастания суммы хранящихся активов*/
+SELECT * FROM organization.bank_accounts ORDER BY bank_assets_value_amt;
+/*ожидаем увидеть список названий операций с суммой операций по ним более 228*/
+SELECT operation_nm, sum(proceeding_amt) FROM organization.transactions GROUP BY operation_nm HAVING sum(proceeding_amt)>228;
+/*ожидаем увидеть список инвесторов в порядке возрастания суммы инвестиций*/
+SELECT * FROM organization.investors ORDER BY investments_amt;
+/*ожидаем увидеть список профессий работников с указанием количества работников на каждой позиции*/
+SELECT staff_position_nm, count(staff_id) FROM organization.staff GROUP BY staff_position_nm HAVING count(staff_id)>0;
 
-COPY project.team FROM 'D://teams.csv' DELIMITER ';' CSV;
-COPY project.kits FROM 'D://kits.csv' DELIMITER ';' CSV;
 
-SELECT * FROM project.match WHERE homescore > 0;
-UPDATE project.stadium SET capacity = 28000 WHERE StadiumID = 4;
-UPDATE project.stadiumName SET StadiumName = 'Tottenham'  WHERE TeamID = 3;
-SELECT * FROM project.team WHERE league = 1;
-DELETE FROM project.kitPrices WHERE brand = 'Kappa';
-SELECT * FROM project.kits WHERE brand='Adidas' and shirtcolor='Red';
-UPDATE project.referee SET RefereeCategory = 'B' WHERE RefereeName='Mike Dean';
-SELECT * FROM project.categories WHERE ismain = true;
+/* 6 * PS INSERT выше*/
+SELECT * FROM organization.assets WHERE asset_amt > 1000;
+UPDATE organization.brokers SET broker_nm = 'Big Sam' WHERE broker_id = 2;
+DELETE FROM organization.bank_accounts WHERE bank_id = 4;
 
-/*ожидаем увидеть команды, которые забили более 2 голов, играя дома*/
-SELECT TeamHomeName,sum(homescore) FROM project.match GROUP BY TeamHomeName HAVING sum(homescore)>2;
-/*ожидаем увидеть список стадионов в порядке возрастания вместимости*/
-SELECT * FROM project.stadium ORDER BY capacity;
-/*ожидаем увидеть список брендов, выпускающих форму, с указанием того, сколько различных форм они выпустили*/
-SELECT brand, count(KitId) FROM project.kits GROUP BY brand HAVING count(KitId)>0;
-/*ожидаем увидеть список брендов в порядке возрастания стоимости формы*/
-SELECT * FROM project.kitprices ORDER BY price;
-/*ожидаем увидеть список стадионов, на которых гостевые команды в сумме забили больше одного гола*/
-SELECT StadiumID,sum(awayscore) FROM project.match GROUP BY StadiumID HAVING sum(awayscore)>1;
-
-CREATE INDEX TeamID ON project.team USING HASH (TeamName);
-CREATE INDEX BrandID ON project.kitprices USING HASH (brand);
-CREATE INDEX RefereeID ON project.referee USING HASH (RefereeName);
-CREATE INDEX CategoryID ON project.categories USING HASH (refereecategory);
-CREATE INDEX StadiumNameID ON project.stadiumName USING HASH (stadiumname);
-/*в остальных таблицах уже есть столбцы ID, которые могут быть использованы как индекс*/
